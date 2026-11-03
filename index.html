@@ -147,7 +147,7 @@ tr.hit td.n { color: var(--amber); opacity: 1; font-weight: 700; }
 .track { position: relative; height: 8px; background: var(--panel-2); border: 1px solid var(--line); }
 .fill { position: absolute; inset: 0 auto 0 0; background: var(--muted); opacity: .5; }
 .row.flag .fill { background: var(--text); opacity: .9; }
-.tick { position: absolute; top: -5px; bottom: -5px; width: 2px; background: var(--cyan); box-shadow: 0 0 6px var(--cyan); }
+.tick { z-index: 1; position: absolute; top: -5px; bottom: -5px; width: 2px; background: var(--cyan); box-shadow: 0 0 6px var(--cyan); }
 .num { font-family: var(--f-mono); font-size: 13px; text-align: right; font-variant-numeric: tabular-nums; }
 .chip { font-family: var(--f-mono); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; padding: 4px 6px; text-align: center; border: 1px solid; }
 .chip.right { color: var(--green); border-color: rgba(61, 255, 149, .45); background: var(--green-soft); }
@@ -417,7 +417,7 @@ details.where .groups { border-top: 1px solid var(--line); }
       const f = flagged(item, m.run, m.thr), s = item.scores[m.run];
       return `<div class="row ${f ? "flag" : ""}">
         <div class="who">${esc(m.name)}<small>${esc(m.note)}</small></div>
-        <div class="track" aria-hidden="true"><div class="fill" style="width:${s == null ? 0 : Math.max(2, s * 10)}%"></div><div class="tick" style="left:calc(${Math.min(m.thr * 10, 99.5)}% - 1px)"></div></div>
+        <div class="track" aria-hidden="true"><div class="fill" style="width:${s == null ? 0 : s * 10}%"></div><div class="tick" title="cutoff ${fmt(m.thr)}" style="left:calc(${Math.min(m.thr * 10, 99.5)}% - 1px)"></div></div>
         <div class="num">${fmt(s)}</div>
         <div class="chip ${right(item, f) ? "right" : "wrong"}">${label(item, f)}</div></div>`;
     }).join("");
@@ -456,7 +456,7 @@ details.where .groups { border-top: 1px solid var(--line); }
       ${simHtml(item, a)}
       <section class="board">
         <h3>The AI monitors on this case</h3>
-        <p class="sub">Each monitor scored the same code from 0 to 10. Teams can only check about 2% of code by hand, so a monitor only raises the alarm above its own cutoff (the blue line).</p>
+        <p class="sub">Each monitor scored the same code from 0 to 10. Teams can only check about 2% of code by hand, so a monitor only raises the alarm when its score is above its own cutoff (the blue line). A score sitting on the line doesn't count. Cheap monitors give most code a 0, so their line sits at 0 and any score above 0 raises the alarm.</p>
         <div class="rows">${monitorRows(item)}</div>
         <div class="legend"><span><span class="t"></span>2% review cutoff</span><span>green = right call · red = wrong call</span></div>
       </section>
